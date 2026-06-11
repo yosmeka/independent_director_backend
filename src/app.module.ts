@@ -32,6 +32,7 @@ import { StorageModule } from './storage/storage.module';
         autoLoadEntities: true,
         synchronize: config.getOrThrow<boolean>('database.synchronize'),
         logging: config.getOrThrow<boolean>('database.logging'),
+        ssl: config.get<string>('env') === 'production' ? { rejectUnauthorized: false } : false,
       }),
     }),
     AuthModule,
