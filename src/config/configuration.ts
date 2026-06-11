@@ -54,9 +54,15 @@ export default (): AppConfig => ({
   port: int(process.env.PORT, 3000),
   frontendOrigin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173',
   database: {
-    url:
-      process.env.DATABASE_URL ??
-      'postgres://zemen:zemen@localhost:5432/zemen_director_portal',
+    url: (() => {
+      const dbUrl = process.env.DATABASE_URL;
+      if (dbUrl) {
+        console.log(`[Config] Using DATABASE_URL from environment (starts with: ${dbUrl.substring(0, 15)}...)`);
+        return dbUrl;
+      }
+      console.warn('[Config] DATABASE_URL not found in environment, falling back to localhost!');
+      return 'postgres://zemen:zemen@localhost:5432/zemen_director_portal';
+    })(),
     synchronize: bool(process.env.DB_SYNCHRONIZE, true),
     logging: bool(process.env.DB_LOGGING, false),
   },
